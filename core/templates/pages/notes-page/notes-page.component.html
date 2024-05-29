@@ -1,0 +1,305 @@
+<div *ngIf="activeTab === 'main'">
+  <mat-card *ngIf="notesData" class="oppia-page-card notes-dashboard-card">
+    <mat-card-header class="notes-header mr-0">
+      <mat-card-title class="w-100 d-flex justify-content-between">
+        <button mat-button
+                *ngIf="notesData.numOfDraftNotesPosts || notesData.numOfPublishedNotesPosts"
+                class="new-post-button e2e-test-create-notes-post-button"
+                (click)="createNewNotesPost()">
+          <mat-icon class="new-post-icon position-absolute">+</mat-icon>
+          <span class="d-flex pl-3">{{ 'I18N_NOTES_PAGE_NEW_POST_BUTTON' | translate | uppercase }}</span>
+        </button>
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="col-sm-8 mx-auto e2e-test-intro-message-container"
+           *ngIf="!(notesData.numOfDraftNotesPosts || notesData.numOfPublishedNotesPosts)">
+        <blockquote class="notes-intro-card">
+          <p class="notes-intro-card-message">
+            {{ 'I18N_NOTES_INTRO_MESSAGE' | translate }}
+          </p>
+          <button mat-button
+                  class="mx-2 my-2 create-new-notes-post-button e2e-test-create-notes-post-button"
+                  (click)="createNewNotesPost()"
+                  aria-label="New notes post button.">
+            {{ 'I18N_NOTES_CREATE_NEW_NOTES_POST_BUTTON' | translate | uppercase }}
+          </button>
+        </blockquote>
+      </div>
+      <mat-tab-group class="e2e-test-mat-tabs" *ngIf="notesData.numOfDraftNotesPosts || notesData.numOfPublishedNotesPosts">
+        <mat-tab>
+          <ng-template mat-tab-label>
+            {{ 'I18N_NOTES_TAB_DRAFTS' | translate | uppercase }} ({{ notesData.numOfDraftNotesPosts }})
+          </ng-template>
+          <div class="justify-content-end d-flex" *ngIf="!windowIsNarrow">
+            <button mat-icon-button (click)="activeView = 'gridView'" class="e2e-test-tiles-view-button">
+              <i [ngClass]="{'view-active': activeView === 'gridView'}" class="fas fa-border-all notes-grid-list-icon"></i>
+            </button>
+            <button mat-icon-button (click)="activeView = 'listView'" class="e2e-test-list-view-button">
+              <i [ngClass]="{'view-active': activeView === 'listView'}" class="fas fa-list notes-grid-list-icon"></i>
+            </button>
+          </div>
+          <div class="notes-tiles-container e2e-test-drafts-notes-post-table" *ngIf="activeView === 'gridView'">
+            <div *ngFor="let notesPostSummary of notesData.draftNotesPostSummaryDicts">
+              <oppia-notes-tile [notesPostSummary]="notesPostSummary"
+                                [notesPostIsPublished]="false"
+                                [activeView]="activeView"
+                                class="d-flex flex-grow-1 e2e-test-draft-notes-post-tile-item"
+                                (deletedNotesPost)="removeNotesPost(notesPostSummary, false)">
+              </oppia-notes-tile>
+            </div>
+          </div>
+          <mat-list class="notes-tiles-container e2e-test-drafts-notes-post-table" *ngIf="activeView === 'listView'">
+            <mat-list-item *ngFor="let notesPostSummary of notesData.draftNotesPostSummaryDicts; last as last">
+              <oppia-notes-tile [notesPostSummary]="notesPostSummary"
+                                [notesPostIsPublished]="false"
+                                [activeView]="activeView"
+                                class="d-flex flex-grow-1 notes-tiles-list e2e-test-notes-post-list-item">
+              </oppia-notes-tile>
+            </mat-list-item>
+          </mat-list>
+        </mat-tab>
+        <mat-tab>
+          <ng-template mat-tab-label class="e2e-test-publish-tab-button">
+            {{ 'I18N_NOTES_TAB_PUBLISHED' | translate | uppercase }} ({{ notesData.numOfPublishedNotesPosts }})
+          </ng-template>
+          <div class="justify-content-end d-flex" *ngIf="!windowIsNarrow">
+            <button mat-icon-button (click)="activeView = 'gridView'" class="e2e-test-tiles-view-button">
+              <i [ngClass]="{'view-active': activeView === 'gridView'}" class="fas fa-border-all notes-grid-list-icon"></i>
+            </button>
+            <button mat-icon-button (click)="activeView = 'listView'" class="e2e-test-list-view-button">
+              <i [ngClass]="{'view-active': activeView === 'listView'}" class="fas fa-list notes-grid-list-icon"></i>
+            </button>
+          </div>
+          <div class="notes-tiles-container e2e-test-published-notes-post-table" *ngIf="activeView === 'gridView'">
+            <div *ngFor="let notesPostSummary of notesData.publishedNotesPostSummaryDicts">
+              <oppia-notes-tile [notesPostSummary]="notesPostSummary"
+                                [notesPostIsPublished]="true"
+                                [activeView]="activeView"
+                                class="d-flex flex-grow-1 e2e-test-published-notes-post-tile-item"
+                                (unpublisedNotesPost)="unpublishedNotesPost(notesPostSummary)"
+                                (deletedNotesPost)="removeNotesPost(notesPostSummary, true)">
+              </oppia-notes-tile>
+            </div>
+          </div>
+          <mat-list class="notes-tiles-container e2e-test-published-notes-post-table" *ngIf="activeView === 'listView'">
+            <mat-list-item *ngFor="let notesPostSummary of notesData.publishedNotesPostSummaryDicts; last as last">
+              <oppia-notes-tile [notesPostSummary]="notesPostSummary"
+                                [notesPostIsPublished]="false"
+                                [activeView]="activeView"
+                                class="d-flex flex-grow-1 notes-tiles-list e2e-test-notes-post-list-item">
+              </oppia-notes-tile>
+            </mat-list-item>
+          </mat-list>
+        </mat-tab>
+      </mat-tab-group>
+    </mat-card-content>
+  </mat-card>
+</div>
+<oppia-notes-post-editor *ngIf="activeTab === 'editor_tab'">
+</oppia-notes-post-editor>
+<style>
+  .notes-card {
+    max-width: 835px;
+    padding-bottom: 100px;
+  }
+
+  .oppia-editor-edit-icon {
+    border: unset;
+    font-size: 16px;
+    position: relative;
+    right: unset;
+    top: unset;
+  }
+
+  .oppia-editor-edit-icon:hover {
+    opacity: 1;
+  }
+
+  .notes-tiles-container {
+    display: flex;
+    flex-flow: wrap;
+    justify-content: center;
+    padding-top: 0.5vw;
+  }
+
+  .notes-card .mat-card-avatar {
+    height: 12vw;
+    max-height: 140px;
+    max-width: 140px;
+    min-height: 44px;
+    min-width: 44px;
+    width: 12vw;
+  }
+
+  .notes-card-title {
+    color: #333;
+    font-family: 'Roboto', Arial, sans-serif;
+    font-size: 2.8rem;
+    font-weight: 300;
+    text-align: left;
+  }
+
+  .notes-intro-card-message {
+    color: #333;
+    font-family: 'Roboto', Arial, sans-serif;
+    font-size: 1.6rem;
+    font-weight: 300;
+    margin: 5px;
+  }
+
+  .notes-intro-card {
+    border: 1px solid #ccc;
+    border-radius: 11px;
+    box-shadow: 5px 5px 5px #00000029;
+    display: flex;
+    flex-direction: column;
+    padding: 5vw;
+  }
+
+  .notes-intro-card:before {
+    background: #fff;
+    border-bottom-right-radius: 80px 50px;
+    border-right: 1px solid #ccc;
+    bottom: -1.88em;
+    box-shadow: 5px 5px 5px #00000029;
+    content: "";
+    display: block;
+    height: 27px;
+    position: absolute;
+    width: 50px;
+    z-index: 10;
+  }
+
+  .notes-intro-card:after {
+    background: #fff;
+    border-bottom-right-radius: 40px 50px;
+    border-right: 1px solid #ccc;
+    border-top: 1px solid #ccc;
+    bottom: -1.88em;
+    box-shadow: inset -5px 5px 5px #00000029;
+    content: "";
+    display: block;
+    height: 27px;
+    position: absolute;
+    width: 20px;
+    z-index: 10;
+  }
+
+  .new-post-button {
+    background-color: #00609c;
+    border-radius: 4px;
+    color: #fff;
+    display: flex;
+    font-size: 1.4rem;
+    height: 36px;
+    justify-content: center;
+    width: 114px;
+  }
+
+  .create-new-notes-post-button {
+    background-color: #00609c;
+    border-radius: 4px;
+    color: #fff;
+    display: flex;
+    font-size: 1.4rem;
+    height: 36px;
+    justify-content: center;
+  }
+
+  .new-post-icon {
+    align-items: center;
+    display: flex;
+    margin-left: -8px;
+  }
+
+  .view-active {
+    color: #00645c;
+  }
+
+  .notes-tiles-list {
+    cursor: pointer;
+  }
+
+  .notes-grid-list-icon {
+    font-size: 20px;
+  }
+
+  :host /deep/ .mat-tab-label {
+    font-family: 'Roboto', Arial, sans-serif;
+    font-size: 1.6rem;
+  }
+
+  :host /deep/ .mat-tab-labels {
+    flex-grow: 1;
+    justify-content: space-evenly;
+  }
+
+  :host /deep/ .mat-tab-label:focus {
+    color: #00645c;
+  }
+
+  :host /deep/ .mat-tab-body-content {
+    overflow: hidden;
+  }
+
+  :host /deep/ mat-card-header .mat-card-header-text {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+  }
+
+  mat-card-header.notes-header {
+    margin: 3.75vw 3.438vw;
+  }
+
+  @media(max-width: 870px) {
+    .notes-card {
+      margin: 20px;
+      width: unset;
+    }
+
+    .new-post-button {
+      margin-bottom: unset;
+    }
+
+    :host /deep/ .mat-tab-label {
+      font-family: 'Roboto', Arial, sans-serif;
+      font-size: 1.1rem;
+    }
+  }
+
+  @media(max-width: 620px) {
+    .notes-card-title {
+      color: #333;
+      font-family: 'Roboto', Arial, sans-serif;
+      font-size: 1.6rem;
+      font-weight: 400;
+      text-align: left;
+    }
+
+    .new-post-button {
+      font-size: 14px;
+      margin-bottom: unset;
+      padding-left: 0;
+      padding-right: 0;
+      width: 96px;
+    }
+
+    .notes-author-bio-container {
+      font-size: 14px;
+      line-height: 16px;
+    }
+
+    :host /deep/ .mat-card-header-text {
+      margin-right: 0;
+    }
+  }
+
+  @media(max-width: 880px) {
+    .mat-card.oppia-page-card {
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+  }
+</style>

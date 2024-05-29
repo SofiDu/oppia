@@ -6207,6 +6207,9 @@ export default {
   "MAX_CHARS_IN_BLOG_POST_TITLE": 65,
   "MIN_CHARS_IN_BLOG_POST_TITLE": 5,
   "MAX_CHARS_IN_BLOG_POST_SUMMARY": 300,
+  "MAX_CHARS_IN_NOTE_TITLE": 65,
+  "MAX_CHARS_IN_NOTE_SUMMARY": 300,
+  "MIN_CHARS_IN_NOTE_TITLE": 5,
   "MAX_CHARS_IN_LEARNER_GROUP_TITLE": 36,
   "STORY_ID_LENGTH": 12,
   // This represents the maximum number of characters in the URL fragment for
@@ -6221,6 +6224,7 @@ export default {
   "MAX_CHARS_IN_SUBTOPIC_URL_FRAGMENT": 25,
   // This is same as base_models.ID_Length.
   "BLOG_POST_ID_LENGTH": 12,
+  "NOTE_ID_LENGTH": 12,
   // The recommended length for meta tag contents. Search engines will truncate
   // results greater than this limit.
   "MAX_CHARS_IN_META_TAG_CONTENT": 160,
@@ -6317,6 +6321,13 @@ export default {
 
   // A regular expression for valid skill misconception id.
   "VALID_SKILL_MISCONCEPTION_ID_REGEX": "[A-Za-z0-9]{12}-[0-9]+",
+
+  // A regular expression for allowed characters in Title field for Note.
+  // eslint-disable-next-line max-len
+  "VALID_NOTE_TITLE_REGEX": "^[a-zA-Z0-9(&!,'/)][a-zA-Z0-9(&!,'/) ]+([-:][ a-zA-Z0-9(&!,'/)]+)*$",
+
+  // A regular expression for allowed characters in URL fragment for Note.
+  "VALID_URL_NOTE_FRAGMENT_REGEX": "^[a-z1-9]+(-[a-z0-9]+)*$",
 
   // A regular expression for allowed characters in author name field for Author
   // details Model.
@@ -7244,6 +7255,100 @@ export default {
     "VOICEOVER_ADMIN": {
       "ROUTE": "voiceover-admin",
       "TITLE": "Voiceover Admin Panel",
+      "META": [
+        {
+          "PROPERTY_TYPE": "itemprop",
+          "PROPERTY_VALUE": "description",
+          // eslint-disable-next-line max-len
+          "CONTENT": "With Oppia, you can access free lessons on math, physics, statistics, chemistry, music, history and more from anywhere in the world. Oppia is a nonprofit with the mission of providing high-quality education to those who lack access to it."
+        },
+        {
+          "PROPERTY_TYPE": "itemprop",
+          "PROPERTY_VALUE": "og:description",
+          // eslint-disable-next-line max-len
+          "CONTENT": "With Oppia, you can access free lessons on math, physics, statistics, chemistry, music, history and more from anywhere in the world. Oppia is a nonprofit with the mission of providing high-quality education to those who lack access to it."
+        }
+      ]
+    },
+    "NOTES_PAGE": {
+      "ROUTE": "notes-page",
+      "TITLE": "NOTES - Oppia",
+      "META": [
+        {
+          "PROPERTY_TYPE": "itemprop",
+          "PROPERTY_VALUE": "description",
+          // eslint-disable-next-line max-len
+          "CONTENT": "With Oppia, you can access free lessons on math, physics, statistics, chemistry, music, history and more from anywhere in the world. Oppia is a nonprofit with the mission of providing high-quality education to those who lack access to it."
+        },
+        {
+          "PROPERTY_TYPE": "itemprop",
+          "PROPERTY_VALUE": "og:description",
+          // eslint-disable-next-line max-len
+          "CONTENT": "With Oppia, you can access free lessons on math, physics, statistics, chemistry, music, history and more from anywhere in the world. Oppia is a nonprofit with the mission of providing high-quality education to those who lack access to it."
+        }
+      ]
+    },
+    "NOTE_HOMEPAGE": {
+      "ROUTE": "note",
+      "TITLE": "I18N_HOME_HOME_PAGE_TITLE",
+      "META": [
+        {
+          "PROPERTY_TYPE": "itemprop",
+          "PROPERTY_VALUE": "description",
+          // eslint-disable-next-line max-len
+          "CONTENT": "Read the latest on what's new and exciting with Oppia."
+        },
+        {
+          "PROPERTY_TYPE": "itemprop",
+          "PROPERTY_VALUE": "og:description",
+          // eslint-disable-next-line max-len
+          "CONTENT": "Read the latest on what's new and exciting with Oppia."
+        }
+      ]
+    },
+    "HOME_HOMEPAGE_SEARCH": {
+      "ROUTE": "note/search/find",
+      "TITLE": "I18N_HOME_HOME_PAGE_TITLE",
+      "META": [
+        {
+          "PROPERTY_TYPE": "itemprop",
+          "PROPERTY_VALUE": "description",
+          // eslint-disable-next-line max-len
+          "CONTENT": "Read the latest on what's new and exciting with Oppia."
+        },
+        {
+          "PROPERTY_TYPE": "itemprop",
+          "PROPERTY_VALUE": "og:description",
+          // eslint-disable-next-line max-len
+          "CONTENT": "Read the latest on what's new and exciting with Oppia."
+        }
+      ]
+    },
+    "NOTE_PAGE": {
+      "ROUTE": "note/:note_url_fragment",
+      "TITLE": "I18N_NOTE_PAGE_TITLE",
+      // Some routes contain url fragments, as syntax for url fragments are
+      // different for angular router and backend. They have to be registered
+      // manually in the backend. Please use angular router syntax here.
+      "MANUALLY_REGISTERED_WITH_BACKEND": true,
+      "META": [
+        {
+          "PROPERTY_TYPE": "itemprop",
+          "PROPERTY_VALUE": "description",
+          // eslint-disable-next-line max-len
+          "CONTENT": "Read the latest on what's new and exciting with Oppia."
+        },
+        {
+          "PROPERTY_TYPE": "itemprop",
+          "PROPERTY_VALUE": "og:description",
+          // eslint-disable-next-line max-len
+          "CONTENT": "Read the latest on what's new and exciting with Oppia."
+        }
+      ]
+    },
+    "NOTE_ADMIN": {
+      "ROUTE": "note-admin",
+      "TITLE": "Oppia Note Admin Panel",
       "META": [
         {
           "PROPERTY_TYPE": "itemprop",

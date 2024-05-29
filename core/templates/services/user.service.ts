@@ -156,6 +156,12 @@ export class UserService {
       return info.isBlogAdmin() || info.isBlogPostEditor();
     });
   }
+
+  async canUserEditNotes(): Promise<boolean> {
+    return this.getUserInfoAsync().then(info => {
+      return info.isNoteAdmin() || info.isNoteEditor();
+    });
+  }
 }
 
 angular

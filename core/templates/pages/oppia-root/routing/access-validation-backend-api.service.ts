@@ -58,6 +58,12 @@ export class AccessValidationBackendApiService {
   COLLECTION_PLAYER_PAGE_ACCESS_VALIDATOR_URL_TEMPLATE =
     '/access_validation_handler/can_access_collection_player_page/<collection_id>'; // eslint-disable-line max-len
 
+  NOTE_HOME_PAGE_ACCESS_VALIDATOR =
+    '/access_validation_handler/can_access_note_home_page';
+
+  NOTE_PAGE_ACCESS_VALIDATOR =
+    '/access_validation_handler/can_access_note_page';
+
   constructor(
     private http: HttpClient,
     private urlInterpolationService: UrlInterpolationService
@@ -125,6 +131,22 @@ export class AccessValidationBackendApiService {
     );
 
     return this.http.get<void>(url).toPromise();
+  }
+
+  validateAccessToNoteHomePage(): Promise<void> {
+    return this.http
+      .get<void>(this.NOTE_HOME_PAGE_ACCESS_VALIDATOR)
+      .toPromise();
+  }
+
+  validateAccessToNotePage(notePageUrlFragment: string): Promise<void> {
+    return this.http
+      .get<void>(this.NOTE_PAGE_ACCESS_VALIDATOR, {
+        params: {
+          note_url_fragment: notePageUrlFragment,
+        },
+      })
+      .toPromise();
   }
 
   validateAccessToReleaseCoordinatorPage(): Promise<void> {

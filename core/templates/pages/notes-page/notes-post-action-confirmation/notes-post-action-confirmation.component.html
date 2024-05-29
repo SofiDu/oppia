@@ -1,0 +1,21 @@
+<div class="modal-header">
+  <h4 class="modal-title text-center">{{ notesPostAction | uppercase }} NOTES POST</h4>
+</div>
+<div class="modal-body" *ngIf="isActionDelete()">
+  <span>This action is irreversible and will permanently delete the notes post. Are you sure?</span>
+</div>
+<div class="modal-body" *ngIf="isActionPublish()">
+  <span>This will publish the notes post on the Notes Homepage. Are you sure?</span>
+</div>
+<div class="modal-body" *ngIf="isActionUnpublish()">
+  <span>This will unpublish the notes post and will convert it into a draft. Are you sure?</span>
+</div>
+<div class="modal-footer">
+  <button type="button" (click)="cancel()" class="btn btn-secondary">Cancel</button>
+  <button type="button"
+          (click)="confirm()"
+          class="btn e2e-test-confirm-button"
+          [ngClass]="{'btn-danger': isActionDelete(), 'btn-success': isActionPublish}">
+    Confirm
+  </button>
+</div>

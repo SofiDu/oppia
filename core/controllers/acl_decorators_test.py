@@ -2415,6 +2415,46 @@ class CanAccessTranslationStatsDecoratorTests(test_utils.GenericTestBase):
         self.logout()
 
 
+class CanAccessNoteAdminPageDecoratorTests(test_utils.GenericTestBase):
+    """Tests for can_access_note_admin_page decorator."""
+
+    username = 'user'
+    user_email = 'user@example.com'
+
+    class MockHandler(base.BaseHandler[Dict[str, str], Dict[str, str]]):
+        GET_HANDLER_ERROR_RETURN_TYPE = feconf.HANDLER_TYPE_JSON
+        URL_PATH_ARGS_SCHEMAS: Dict[str, str] = {}
+        HANDLER_ARGS_SCHEMAS: Dict[str, Dict[str, str]] = {'GET': {}}
+
+        @acl_decorators.can_access_note_admin_page
+        def get(self) -> None:
+            self.render_json({'success': 1})
+
+    def setUp(self) -> None:
+        super().setUp()
+        self.signup(self.user_email, self.username)
+        self.signup(self.NOTE_EDITOR_EMAIL, self.NOTE_EDITOR_USERNAME)
+        self.signup(self.NOTE_ADMIN_EMAIL, self.NOTE_ADMIN_USERNAME)
+
+        self.add_user_role(
+            self.NOTE_ADMIN_USERNAME, feconf.ROLE_ID_NOTE_ADMIN)
+        self.add_user_role(
+            self.NOTE_EDITOR_USERNAME, feconf.ROLE_ID_NOTE_EDITOR)
+        self.mock_testapp = webtest.TestApp(webapp2.WSGIApplication(
+            [webapp2.Route('/note-admin', self.MockHandler)],
+            debug=feconf.DEBUG,
+        ))
+
+    def test_blog_admin_can_access_blog_admin_page(self) -> None:
+        self.login(self.NOTE_ADMIN_EMAIL)
+
+        with self.swap(self, 'testapp', self.mock_testapp):
+            response = self.get_json('/note-admin')
+
+        self.assertEqual(response['success'], 1)
+        self.logout()
+
+
 class CanManageMemcacheDecoratorTests(test_utils.GenericTestBase):
     """Tests for can_manage_memcache decorator."""
 

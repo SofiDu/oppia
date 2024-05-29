@@ -268,6 +268,35 @@ export class UrlService {
   }
 
   /**
+   * This function is used to find the note id from the url.
+   * @return {string} the note id.
+   * @throws Will throw an error if the note Id is invalid.
+   */
+  getNoteIdFromUrl(): string {
+    let pathname = this.getHash();
+    let noteId = pathname.split('/')[2];
+    if (noteId.length !== 12) {
+      throw new Error('Invalid Note Id.');
+    }
+    return noteId;
+  }
+
+  /**
+   * This function is used to find the note url fragment from the url.
+   * @return {string} the note url fragment.
+   * @throws Will throw an error if the note url is invalid.
+   */
+  getNoteUrlFromUrl(): string {
+    let pathname = this.getPathname();
+    let argumentsArray = pathname.split('/');
+    if (pathname.startsWith('/note') && argumentsArray.length === 3) {
+      return decodeURIComponent(pathname.split('/')[2]);
+    } else {
+      throw new Error('Invalid Note Url.');
+    }
+  }
+
+  /**
    * This function is used to find the blog id from the url.
    * @return {string} the blog post id.
    * @throws Will throw an error if the blog post Id is invalid.

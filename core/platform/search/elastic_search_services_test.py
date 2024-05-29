@@ -489,3 +489,73 @@ class ElasticSearchUnitTests(test_utils.GenericTestBase):
         )
         self.assertEqual(result, [])
         self.assertEqual(new_offset, None)
+
+    def test_note_summaries_search_returns_ids_only(self) -> None:
+        correct_index_name = search_services.SEARCH_INDEX_NOTES
+        elastic_search_services.add_documents_to_index([{
+            'id': 1,
+            'source': {
+                'param1': 1,
+                'param2': 2
+            }
+        }, {
+            'id': 12,
+            'source': {
+                'param1': 3,
+                'param2': 4
+            }
+        }], correct_index_name)
+
+        result, new_offset = (
+            elastic_search_services.note_summaries_search(
+                '', offset=0, size=50
+            )
+        )
+        self.assertEqual(result, [1, 12])
+        self.assertIsNone(new_offset)
+
+    def test_note_summaries_search_returns_none_when_response_is_empty(
+            self
+    ) -> None:
+        result, new_offset = elastic_search_services.note_summaries_search(
+            '', offset=0, size=50
+        )
+        self.assertEqual(new_offset, None)
+        self.assertEqual(result, [])
+
+    def test_note_search_returns_the_right_num_of_docs_even_if_more_exist(
+            self
+    ) -> None:
+        elastic_search_services.add_documents_to_index([{
+            'id': 'doc_id1',
+            'title': 'note world'
+        }, {
+            'id': 'doc_id2',
+            'title': 'hello note'
+        }], search_services.SEARCH_INDEX_NOTES)
+        results, new_offset = (
+            elastic_search_services.note_summaries_search(
+                'note', offset=None, size=1
+            )
+        )
+        self.assertEqual(len(results), 1)
+        self.assertEqual(new_offset, 1)
+
+        results, new_offset = (
+            elastic_search_services.note_summaries_search(
+                'note', offset=1, size=1
+            )
+        )
+        self.assertEqual(len(results), 1)
+        self.assertIsNone(new_offset)
+
+    def test_note_search_returns_without_error_when_index_does_not_exist(
+            self
+    ) -> None:
+        # We perform search without adding any document to index. Therefore blog
+        # post search index doesn't exist.
+        result, new_offset = elastic_search_services.note_summaries_search(
+            'query'
+        )
+        self.assertEqual(result, [])
+        self.assertEqual(new_offset, None)

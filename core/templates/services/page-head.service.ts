@@ -57,4 +57,9 @@ export class PageHeadService {
     // Update meta tags.
     this.metaTagCustomizationService.addOrReplaceMetaTags(metaAttributes);
   }
+
+  updateTitle(pageTitle: string): void {
+    // Update default title.
+    this.pageTitleService.setDocumentTitle(pageTitle);
+  }
 }

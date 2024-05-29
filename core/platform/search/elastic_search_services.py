@@ -377,3 +377,70 @@ def blog_post_summaries_search(
     )
 
     return result_ids, resulting_offset
+
+
+def note_summaries_search(
+        query_string: str,
+        offset: Optional[int] = None,
+        size: int = feconf.SEARCH_RESULTS_PAGE_SIZE,
+) -> Tuple[List[str], Optional[int]]:
+    """Searches for note summary documents matching the given query in the
+    note search index.
+    NOTE: We cannot search through more than 10,000 results from a search by
+    paginating using size and offset.
+
+    This function also creates the note search index if it does not exist
+    yet.
+
+    Args:
+        query_string: str. The terms that the user is searching for in the
+            notes.
+        offset: int|None. The offset into the index. Pass this in to start at
+            the 'offset' when searching through a list of results of max length
+            'size'. Leave as None to start at the beginning.
+        size: int. The maximum number of documents to return.
+
+    Returns:
+        2-tuple of (result_ids, resulting_offset). Where:
+            result_ids: list(str). Represents search documents, this will be a
+                list of strings corresponding to the search document ids.
+            resulting_offset: int. The resulting offset to start at for the
+                next section of the results. Returns None if there are no more
+                results.
+    """
+    if offset is None:
+        offset = 0
+
+    # Here we use type Any because the query_definition is a dictionary having
+    # values of various types.
+    # This can be seen from the type stubs of elastic search.
+    # The type of 'body' is 'Any'.
+    # https://github.com/elastic/elasticsearch-py/blob/acf1e0d94e083c85bb079564d17ff7ee29cf28f6/elasticsearch/client/__init__.pyi#L768
+    query_definition: Dict[str, Any] = {
+        'query': {
+            'bool': {
+                'must': [],
+                'filter': [],
+            }
+        },
+        'sort': [{
+            'rank': {
+                'order': 'desc',
+                'missing': '_last',
+                'unmapped_type': 'float',
+            }
+        }],
+    }
+    if query_string:
+        query_definition['query']['bool']['must'] = [{
+            'multi_match': {
+                'query': query_string,
+            }
+        }]
+
+    index_name = search_services.SEARCH_INDEX_NOTES
+    result_ids, resulting_offset = _fetch_response_from_elastic_search(
+        query_definition, index_name, offset, size
+    )
+
+    return result_ids, resulting_offset

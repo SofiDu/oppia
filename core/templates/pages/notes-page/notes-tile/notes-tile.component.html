@@ -1,0 +1,164 @@
+<mat-card class="notes-tile e2e-test-notes-tile" *ngIf="activeView === 'gridView'">
+  <div class="notes-tile-content">
+    <mat-card-content>
+      <div class="notes-tile-header">
+        <mat-card-title class="notes-tile-title e2e-test-notes-post-title" *ngIf="notesPostSummary.title === ''">
+          {{ 'I18N_NOTES_POST_UNTITLED_HEADING' | translate }}
+        </mat-card-title>
+        <mat-card-title class="notes-tile-title e2e-test-notes-post-title" *ngIf="notesPostSummary.title !== ''">
+          {{ notesPostSummary.title }}
+        </mat-card-title>
+        <mat-card-subtitle class="notes-tile-subtitle e2e-test-notes-post-subtitle" *ngIf="notesPostSummary.subtitle !== ''">
+          {{ notesPostSummary.subtitle }}
+        </mat-card-subtitle>
+        <button mat-icon-button
+                class="drop-down-button e2e-test-notes-post-edit-box"
+                [matMenuTriggerFor]="notesCardOptions">
+          <mat-icon class="align-text-bottom">more_vert</mat-icon>
+        </button>
+        <mat-menu #notesCardOptions="matMenu">
+          <button mat-menu-item
+                  (click)="editNotesPost()"
+                  class="e2e-test-edit-notes-post-button">
+            <span>Edit</span>
+          </button>
+          <button mat-menu-item
+                  *ngIf="notesPostIsPublished"
+                  (click)="unpublishNotesPost()"
+                  class="e2e-test-unpublish-notes-post-button">
+            <span>Unpublish</span>
+          </button>
+          <button mat-menu-item
+                  (click)="deleteNotesPost()"
+                  class="e2e-test-delete-notes-post-button">
+            <span>Delete</span>
+          </button>
+        </mat-menu>
+      </div>
+      <mat-card-subtitle class="notes-tile-subtitle">
+        {{ lastUpdatedDateString }}
+      </mat-card-subtitle>
+      <oppia-rte-output-display [rteString]="this.summaryContent"
+                                class="notes-post-summary d-block">
+      </oppia-rte-output-display>
+    </mat-card-content>
+  </div>
+</mat-card>
+<div class="d-flex flex-row flex-grow-1 justify-content-between align-items-baseline" (click)="editNotesPost()" *ngIf="activeView === 'listView'">
+  <span class="notes-tile-title e2e-test-notes-post-title px-0 py-0 col-sm-5" *ngIf="notesPostSummary.title !== ''">
+    {{ notesPostSummary.title }}
+  </span>
+  <span class="notes-tile-title e2e-test-notes-post-title px-0 py-0 col-sm-5" *ngIf="notesPostSummary.title === ''">
+    {{ 'I18N_NOTES_POST_UNTITLED_HEADING' | translate }}
+  </span>
+  <oppia-rte-output-display [rteString]="this.summaryContent"
+                            class="notes-post-summary truncated-text col-sm-6">
+  </oppia-rte-output-display>
+  <span class="notes-tile-subtitle d-contents col-sm-2 px-0 py-0">
+    {{ lastUpdatedDateString }}
+  </span>
+  <mat-divider [inset]="true" *ngIf="!last"></mat-divider>
+</div>
+<style>
+  .notes-tile {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 3px 3px #00000029;
+    height: 230px;
+    margin: 10px;
+    width: 344px;
+  }
+
+  .notes-tile-header {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .notes-tile-title {
+    color: #333;
+    font-family: 'Roboto', Arial, sans-serif;
+    font-size: 2rem;
+    line-height: 24px;
+    text-align: left;
+  }
+
+  .notes-tile-subtitle {
+    font-size: 1.2rem;
+    line-height: 10px;
+    margin-bottom: 8px;
+  }
+
+  .notes-post-summary {
+    color: #555;
+    font-family: 'Roboto', Arial, sans-serif;
+    font-size: 1.6rem;
+    text-align: left;
+  }
+
+  .drop-down-button {
+    height: 30px
+  }
+
+  :host /deep/ .mat-menu-content:not(:empty) {
+    padding-bottom: unset;
+    padding-top: unset;
+  }
+
+  :host /deep/ .cdk-overlay-pane .mat-menu-panel {
+    border-radius: 1px;
+    min-height: unset;
+  }
+
+  .truncated-text {
+    max-width: 400px;
+    overflow: hidden;
+    padding: 0;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  @media(max-width: 820px) {
+    .notes-tile {
+      height: 160px;
+      width: 280px;
+    }
+
+    .notes-tile-title {
+      font-size: 1.4rem;
+      line-height: 16.8px;
+    }
+
+    .notes-post-summary {
+      color: #555;
+      font-family: 'Roboto', Arial, sans-serif;
+      font-size: 1.2rem;
+      text-align: left;
+    }
+
+    .notes-tile-subtitle {
+      margin-top: -10px;
+    }
+
+    .truncated-text {
+      max-width: 300px
+    }
+
+    @media(max-width: 480px) {
+      .notes-tile {
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .truncated-text {
+        max-width: 100px
+      }
+    }
+
+    @media(max-width: 600px) {
+      .truncated-text {
+        margin-left: -15px;
+        max-width: 200px;
+      }
+    }
+  }
+</style>

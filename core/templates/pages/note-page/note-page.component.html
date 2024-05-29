@@ -1,0 +1,58 @@
+<div class="justify-content-center" *ngIf="this.note">
+  <mat-card class="oppia-note-page-card oppia-page-card py-5 mb-4 e2e-test-oppia-note-page-card">
+    <mat-card-title class="note-card-title e2e-test-note-page-title-container" [ngClass]="{'mt-5': !isSmallScreenViewActive()}">
+      {{ note.title }}
+    </mat-card-title>
+    <div class="note-card-header-content">
+      <mat-card-header [ngClass]="{'mb-5': !isSmallScreenViewActive(), 'mb-0': isSmallScreenViewActive()}">
+        <mat-menu #menu="matMenu">
+          <div class="d-flex ml-1 mr-1">
+            <div class="url-link text-monospace text-nowrap border border-secondary p-1 overflow-auto">
+              {{ getPageUrl() }}
+            </div>
+            <button mat-flat-button
+                    (click)="$event.stopPropagation(); copyLink('url-link'); tooltip.show()"
+                    #tooltip="matTooltip"
+                    class="copy-button float-right mb-auto pl-2 pr-0"
+                    (mouseenter)="$event.stopImmediatePropagation()"
+                    (mouseleave)="$event.stopImmediatePropagation()"
+                    matTooltip="Copied"
+                    matTooltipPosition="right"
+                    aria-tooltip="Button that copies the note page url which can be then shared accross different platforms."
+                    aria-label="Button that copies the note page url which can be then shared accross different platforms.">
+              <span class="material-icons"> content_copy </span>
+            </button>
+          </div>
+          <div class="d-flex mt-3">
+            <span class="d-block mb-1 mx-2 note-sub-heading-font">Share via:</span>
+            <sharing-links [noteUrl]="noteUrlFragment"
+                           layoutType="row note-sharing-links"
+                           layoutAlignType="center center"
+                           [shareType]="'note'"
+                           class="oppia-collection-footer-sharing-links"
+                           aria-label="Social media links to share note post on different social media platforms.">
+            </sharing-links>
+          </div>
+        </mat-menu>
+      </mat-card-header>
+      <mat-card-content class="note-card-content"
+                        [ngClass]="{'mt-4': !isSmallScreenViewActive(), 'mt-2': isSmallScreenViewActive()}">
+        <oppia-rte-output-display [rteString]="this.note.content"
+                                  class="d-block"
+                                  [ngClass]="{'pt-3': !isSmallScreenViewActive(), 'pt-1': isSmallScreenViewActive()}">
+        </oppia-rte-output-display>
+      </mat-card-content>
+    </div>
+  </mat-card>
+  <div *ngIf="postsToRecommend.length !== 0" class="oppia-note-page-card post-to-recommend-section mx-auto mb-5">
+    <div class="justify-content-between" [ngClass]="{'d-flex': !isSmallScreenViewActive()}">
+      <div *ngFor="let noteSummary of postsToRecommend"
+           class="note-card mb-4 e2e-test-note-list">
+        <oppia-note-card [noteSummary]="noteSummary"
+                         [shownOnnotePage]="true"
+                         class="e2e-test-note-tile-item">
+        </oppia-note-card>
+      </div>
+    </div>
+  </div>
+</div>

@@ -149,6 +149,16 @@
 /core/templates/services/html-length.service.spec.ts @oppia/contributor-experience-team
 
 
+# Note project
+/core/domain/note*.py @oppia/lace-backend-reviewers
+/core/controllers/notes_page*.py @oppia/lace-backend-reviewers
+/core/controllers/note_homepage*.py @oppia/lace-backend-reviewers
+/core/templates/domain/note/ @oppia/lace-frontend-reviewers
+/core/templates/pages/notes-page/ @oppia/lace-frontend-reviewers
+/core/templates/pages/note-home-page/ @oppia/lace-frontend-reviewers
+/core/templates/pages/note-page/ @oppia/lace-frontend-reviewers
+
+
 # Core documentation
 /CHANGELOG @oppia/release-workflow-reviewers
 /core/templates/pages/android-page/ @oppia/lace-frontend-reviewers
@@ -257,6 +267,7 @@
 /core/templates/services/staleness-detection.service*.ts @oppia/lace-frontend-reviewers
 /core/templates/services/validators.service*.ts @oppia/lace-frontend-reviewers
 /core/templates/services/yaml.service*.ts @oppia/lace-frontend-reviewers
+/core/templates/services/note-search.service.ts @oppia/lace-frontend-reviewers
 /core/templates/components/copy-url/ @oppia/lace-frontend-reviewers
 
 
@@ -566,15 +577,17 @@
 /core/controllers/blog_admin*.py @oppia/lace-backend-reviewers
 /core/controllers/moderator*.py @oppia/lace-backend-reviewers
 /core/controllers/recent_commits*.py @oppia/lace-backend-reviewers
+/core/controllers/note_admin*.py @oppia/lace-backend-reviewers
 /core/domain/moderator_services*.py @oppia/lace-backend-reviewers
 /core/templates/domain/admin/ @oppia/lace-frontend-reviewers
 /core/templates/domain/blog-admin/ @oppia/lace-frontend-reviewers
 /core/templates/pages/admin-page/ @oppia/lace-frontend-reviewers
+/core/templates/domain/note-admin/ @oppia/lace-frontend-reviewers
 /core/templates/pages/moderator-page/ @oppia/lace-frontend-reviewers
 /core/templates/pages/blog-admin-page/ @oppia/lace-frontend-reviewers
 /core/templates/pages/classroom-admin-page/ @oppia/lace-frontend-reviewers
 /core/templates/pages/voiceover-admin-page/ @oppia/lace-frontend-reviewers
-
+/core/templates/pages/note-admin-page/ @oppia/lace-frontend-reviewers
 
 # Release team.
 /.gcloudignore @oppia/release-workflow-reviewers

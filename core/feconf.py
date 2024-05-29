@@ -169,6 +169,7 @@ class ValidModelNames(enum.Enum):
     TRANSLATION = 'translation'
     USER = 'user'
     VOICEOVER = 'voiceover'
+    NOTE = 'note'
 
 
 # A mapping of interaction ids to classifier properties.
@@ -764,6 +765,10 @@ MAX_NUM_CARDS_TO_DISPLAY_ON_BLOG_AUTHOR_PROFILE_PAGE = 12
 # blog post page.
 MAX_POSTS_TO_RECOMMEND_AT_END_OF_BLOG_POST = 2
 
+# The maximum number of note card to be visible on each page in note
+# homepage.
+MAX_NUM_CARDS_TO_DISPLAY_ON_NOTE_HOMEPAGE = 10
+
 # The prefix for an 'accepted suggestion' commit message.
 COMMIT_MESSAGE_ACCEPTED_SUGGESTION_PREFIX = 'Accepted suggestion by'
 
@@ -1037,6 +1042,11 @@ SKILL_EDITOR_QUESTION_URL = '/skill_editor_question_handler'
 SKILL_MASTERY_DATA_URL = '/skill_mastery_handler/data'
 SKILL_RIGHTS_URL_PREFIX = '/skill_editor_handler/rights'
 SKILL_DESCRIPTION_HANDLER = '/skill_description_handler'
+NOTE_ADMIN_ROLE_HANDLER_URL = '/noteadminrolehandler'
+NOTES_PAGE_DATA_URL = '/notespagehandler/data'
+NOTE_HOMEPAGE_URL = '/note'
+NOTE_SEARCH_DATA_URL = '/note/searchhandler/data'
+NOTE_TITLE_HANDLER = '/notetitlehandler/data'
 DIAGNOSTIC_TEST_SKILL_ASSIGNMENT_HANDLER = (
     '/diagnostic_test_skill_assignment_handler')
 DIAGNOSTIC_TEST_QUESTIONS_HANDLER_URL = '/diagnostic_test_questions_handler_url'
@@ -1231,6 +1241,8 @@ ROLE_ID_TRANSLATION_ADMIN = 'TRANSLATION_ADMIN'
 ROLE_ID_VOICEOVER_ADMIN = 'VOICEOVER_ADMIN'
 ROLE_ID_QUESTION_COORDINATOR = 'QUESTION_COORDINATOR'
 ROLE_ID_TRANSLATION_COORDINATOR = 'TRANSLATION_COORDINATOR'
+ROLE_ID_NOTE_ADMIN = 'NOTE_ADMIN'
+ROLE_ID_NOTE_EDITOR = 'NOTE_EDITOR'
 
 ALLOWED_DEFAULT_USER_ROLES_ON_REGISTRATION = [
     ROLE_ID_FULL_USER, ROLE_ID_MOBILE_LEARNER]
@@ -1250,7 +1262,9 @@ ALLOWED_USER_ROLES = [
     ROLE_ID_TRANSLATION_ADMIN,
     ROLE_ID_VOICEOVER_ADMIN,
     ROLE_ID_QUESTION_COORDINATOR,
-    ROLE_ID_TRANSLATION_COORDINATOR
+    ROLE_ID_TRANSLATION_COORDINATOR,
+    ROLE_ID_NOTE_ADMIN,
+    ROLE_ID_NOTE_EDITOR
 ]
 
 # Intent of the User making query to role structure via admin interface. Used

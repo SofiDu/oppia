@@ -22,6 +22,7 @@ from core.domain import blog_services
 from core.domain import collection_services
 from core.domain import exp_fetchers
 from core.domain import exp_services
+from core.domain import note_services
 from core.domain import rating_services
 from core.domain import rights_manager
 from core.domain import search_services
@@ -377,3 +378,119 @@ class BlogPostSearchServicesUnitTests(test_utils.GenericTestBase):
         result = search_services.search_blog_post_summaries(
             'title', [], 2)[0]
         self.assertEqual(result, [self.blog_post_b_id])
+
+
+class NoteSearchServicesUnitTests(test_utils.GenericTestBase):
+
+    def setUp(self) -> None:
+        super().setUp()
+
+        self.signup('a@example.com', 'A')
+        self.signup('b@example.com', 'B')
+        self.user_id_a = self.get_user_id_from_email('a@example.com')
+        self.user_id_b = self.get_user_id_from_email('b@example.com')
+
+        self.note_a = note_services.create_new_note(self.user_id_a)
+        self.note_b = note_services.create_new_note(self.user_id_b)
+        self.note_a_id = self.note_a.id
+        self.note_b_id = self.note_b.id
+
+        self.change_dict_one: note_services.NoteChangeDict = {
+            'title': 'Sample title one',
+            'subtitle': 'Sample subtitle one',
+            'content': '<p>Hello</p>'
+        }
+
+        self.change_dict_two: note_services.NoteChangeDict = {
+            'title': 'Sample title two',
+            'subtitle': 'Sample subtitle two',
+            'content': '<p>Hello</p>',
+        }
+
+        note_services.update_note(
+            self.note_a_id, self.change_dict_one)
+        note_services.update_note(
+            self.note_b_id, self.change_dict_two)
+        note_services.publish_note(self.note_a_id)
+        note_services.publish_note(self.note_b_id)
+
+    def test_search_note_summaries(self) -> None:
+        expected_query_string = 'a query string'
+        expected_offset = 0
+        expected_size = 30
+        expected_result_offset = 30
+        doc_ids = ['id1', 'id2']
+
+        def mock_search(
+                query_string: str,
+                offset: Optional[int] = None,
+                size: int = 20,
+                retries: int = 3
+        ) -> Tuple[List[str], Optional[int]]:
+            self.assertEqual(query_string, expected_query_string)
+            self.assertEqual(offset, expected_offset)
+            self.assertEqual(size, expected_size)
+            self.assertEqual(retries, 3)
+
+            return doc_ids, expected_result_offset
+
+        with self.swap(
+                gae_search_services, 'note_summaries_search', mock_search
+        ):
+            result, result_offset = (
+                search_services.search_note_summaries(
+                    expected_query_string, expected_size,
+                    offset=expected_offset,
+                )
+            )
+
+        self.assertEqual(result_offset, expected_result_offset)
+        self.assertEqual(result, doc_ids)
+
+    def test_clear_note_search_index(self) -> None:
+        result = search_services.search_note_summaries(
+            'title', 2)[0]
+        self.assertEqual(result, [self.note_a_id, self.note_b_id])
+        search_services.clear_note_summaries_search_index()
+        result = search_services.search_note_summaries(
+            'title', 2)[0]
+        self.assertEqual(result, [])
+
+    def test_delete_notes_from_search_index(self) -> None:
+
+        def _mock_delete_docs(ids: List[str], index: str) -> None:
+            """Mocks delete_documents_from_index()."""
+            self.assertEqual(ids, [self.note_a_id])
+            self.assertEqual(
+                index, search_services.SEARCH_INDEX_NOTES)
+
+        delete_docs_counter = test_utils.CallCounter(_mock_delete_docs)
+
+        delete_docs_swap = self.swap(
+            gae_search_services, 'delete_documents_from_index',
+            delete_docs_counter)
+
+        with delete_docs_swap:
+            search_services.delete_note_summary_from_search_index(self.note_a_id)  # pylint: disable=line-too-long
+
+        self.assertEqual(delete_docs_counter.times_called, 1)
+
+    def test_should_not_index_draft_note(self) -> None:
+        result = search_services.search_note_summaries(
+            'title', 2)[0]
+        self.assertEqual(result, [self.note_a_id, self.note_b_id])
+
+        # Unpublishing a note post removes it from the search index.
+        note_services.unpublish_note(self.note_a_id)
+        result = search_services.search_note_summaries(
+            'title', 2)[0]
+        self.assertEqual(result, [self.note_b_id])
+
+        # Trying indexing draft note post.
+        draft_note = note_services.get_note_summary_by_id(
+            self.note_a_id)
+        search_services.index_note_summaries([draft_note])
+
+        result = search_services.search_note_summaries(
+            'title', 2)[0]
+        self.assertEqual(result, [self.note_b_id])

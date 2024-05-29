@@ -1,0 +1,255 @@
+<mat-card role="button"
+          class="notes-card"
+          [ngClass]="{'recommendation-notes-card': shownOnnotesPostPage, 'notes-card-is-clickable': !notesCardPreviewModeIsActive}"
+          (click)="navigateToNotesPostPage()"
+          (keydown.enter)="navigateToNotesPostPage()">
+  <div mat-card-image class="notes-card-thumbnail-container">
+    <picture>
+      <img mat-card-image
+           *ngIf="thumbnailUrl || !notesCardPreviewModeIsActive"
+           class="notes-card-thumbnail"
+           [src]="thumbnailUrl"
+           alt="Thumbnail image of the notes card">
+      <p *ngIf="!thumbnailUrl && notesCardPreviewModeIsActive" class="px-4 py-2">
+        {{ 'I18N_NOTES_POST_EDITOR_NO_THUMBNAIL_UPLOADED_WARNING' | translate }}
+      </p>
+    </picture>
+  </div>
+  <div class="notes-card-content" [ngClass]="{'mx-1 my-1': shownOnnotesPostPage}">
+    <mat-card-title class="notes-card-title e2e-test-notes-post-tile-title">
+      {{ notesPostSummary.title }}
+    </mat-card-title>
+    <mat-card-subtitle class="notes-card-subtitle e2e-test-notes-post-tile-subtitle">
+      {{ notesPostSummary.subtitle }}
+    </mat-card-subtitle>
+    <mat-card-header class="mt-2">
+      <picture>
+        <source type="image/webp" [srcset]="authorProfilePicWebpUrl">
+        <source type="image/png" [srcset]="authorProfilePicPngUrl">
+        <img mat-card-avatar
+             [src]="authorProfilePicPngUrl"
+             class="e2e-test-profile-user-photo"
+             alt="Profile image of the author of the notes post">
+      </picture>
+      <mat-card-subtitle class="e2e-test-username-visible">
+        {{ notesPostSummary.displayedAuthorName }}
+      </mat-card-subtitle>
+      <mat-card-subtitle class="font-weight-light mobile-published-date">
+        {{ publishedDateString }}
+      </mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content class="mt-4 notes-card-summary">
+      <oppia-rte-output-display [rteString]="this.notesPostSummary.summary"
+                                class="d-block">
+      </oppia-rte-output-display>
+    </mat-card-content>
+    <mat-card-footer class="d-flex notes-card-tag-container flex-wrap pt-2">
+      <div *ngFor="let tag of notesPostSummary.tags"
+           class="notes-card-tag px-1 py-1 mx-1 my-1">
+        <span>{{ tag }}</span>
+      </div>
+    </mat-card-footer>
+  </div>
+</mat-card>
+<style>
+  @media (min-width: 900px) {
+    .notes-card.recommendation-notes-card {
+      margin: 0;
+      max-width: 455px;
+      width: 33.5vw;
+    }
+  }
+
+  .notes-card-tag-container {
+    margin: unset;
+  }
+
+  .notes-card-tag {
+    background: #fff;
+    border: 1px solid #333;
+    border-radius: 2px;
+    color: #555;
+    font-family: 'Roboto', Arial, sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    letter-spacing: 0;
+    line-height: 19px;
+    opacity: 1;
+    text-align: center;
+  }
+
+  .notes-card {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 3px 3px #00000029;
+    margin: 10px;
+    min-height: 420px;
+    width: 576px;
+  }
+
+  .notes-card.notes-card-is-clickable {
+    cursor: pointer;
+  }
+
+  .mat-card-image.notes-card-thumbnail {
+    height: 144px;
+    margin: 0;
+    max-width: unset;
+    object-position: top;
+    width: 100%;
+  }
+
+  .notes-card-thumbnail-container {
+    background-color: #aaa9;
+    border-top-left-radius: inherit;
+    border-top-right-radius: inherit;
+    height: 144px;
+    margin: -16px -16px 16px -16px;
+    width: calc(100% + 32px);
+  }
+
+  .notes-card-content {
+    margin: 4px 46px;
+  }
+
+  .notes-card-title {
+    color: #333;
+    font-family: 'Roboto', Arial, sans-serif;
+    font-size: 2rem;
+    font-weight: 100;
+    line-height: 28px;
+    margin-bottom: 0;
+    text-align: left;
+  }
+
+  .notes-card-content .mat-card-avatar {
+    height: 32px;
+    width: 32px;
+  }
+
+  .notes-card-content mat-card-subtitle {
+    color: #555;
+    font-size: 1.2rem;
+    font-weight: 600;
+    line-height: 20px;
+    margin-bottom: 3px;
+    margin-left: -10px;
+  }
+
+  .notes-card-summary {
+    color: #555;
+    font-family: 'Roboto', Arial, sans-serif;
+    font-size: 1.6rem;
+    line-height: 24px;
+    text-align: left;
+  }
+
+  .notes-card-content mat-card-content {
+    margin-bottom: 0;
+  }
+
+  @media (min-width: 1024px) and (max-width: 1200px), (max-width: 768px) {
+    .notes-card {
+      margin-left: auto;
+      margin-right: auto;
+      min-height: unset;
+      width: 476px;
+    }
+
+    .mat-card-image.notes-card-thumbnail {
+      height: 119px;
+    }
+
+    .notes-card-thumbnail-container {
+      height: 119px;
+    }
+
+    .notes-card-title {
+      font-size: 1.6rem;
+      font-weight: 500;
+      line-height: 14px;
+    }
+
+    .notes-card-content .mat-card-avatar {
+      height: 29px;
+      width: 29px;
+    }
+
+    .mobile-published-date {
+      font-size: 10px;
+    }
+
+    .notes-card-summary {
+      font-size: 1.3rem;
+    }
+
+    .notes-card-content {
+      margin: 0;
+    }
+
+    .notes-card-content mat-card-subtitle {
+      font-size: 1rem;
+      line-height: 16px;
+    }
+
+    .notes-card-tag {
+      color: #555;
+      font-size: 13px;
+      letter-spacing: 0;
+      line-height: 15px;
+      opacity: 1;
+    }
+  }
+
+  @media(max-width: 550px) {
+    @media (max-width: 470px) {
+      .mat-card-image.notes-card-thumbnail {
+        height: 85px;
+      }
+
+      .notes-card-thumbnail-container {
+        height: 85px;
+      }
+    }
+
+    @media (max-width: 440px) {
+      mat-card.notes-card {
+          width: 335px;
+      }
+    }
+
+    .notes-card {
+      margin-left: auto;
+      margin-right: auto;
+      width: 376px;
+    }
+
+    .notes-card-title {
+      font-size: 1.2rem;
+      font-weight: 500;
+      line-height: 14px;
+    }
+
+    .notes-card-content .mat-card-avatar {
+      height: 27px;
+      width: 27px;
+    }
+
+    .mobile-published-date {
+      font-size: 9px;
+    }
+
+    .notes-card-summary {
+      font-size: 1rem;
+    }
+
+    .notes-card-content {
+      margin: 0;
+    }
+
+    .notes-card-content mat-card-subtitle {
+      font-size: 0.9rem;
+      line-height: 16px;
+    }
+  }
+</style>

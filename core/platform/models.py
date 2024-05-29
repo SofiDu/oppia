@@ -41,7 +41,7 @@ Names = feconf.ValidModelNames
 MODULES_WITH_PSEUDONYMIZABLE_CLASSES = (  # pylint: disable=invalid-name
     Names.APP_FEEDBACK_REPORT, Names.BLOG, Names.COLLECTION, Names.CONFIG,
     Names.EXPLORATION, Names.FEEDBACK, Names.QUESTION, Names.SKILL, Names.STORY,
-    Names.SUBTOPIC, Names.SUGGESTION, Names.TOPIC
+    Names.SUBTOPIC, Names.SUGGESTION, Names.TOPIC, Names.NOTE
 )
 
 GAE_PLATFORM = 'gae'
@@ -195,6 +195,9 @@ class _Gae(Platform):
                 from core.storage.voiceover import (
                     gae_models as voiceover_models)
                 returned_models.append(voiceover_models)
+            elif name == Names.NOTE:
+                from core.storage.note import gae_models as note_models
+                returned_models.append(note_models)
             else:
                 raise Exception('Invalid model name: %s' % name)
 

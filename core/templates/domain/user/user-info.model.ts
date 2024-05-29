@@ -24,6 +24,8 @@ export enum UserRoles {
   TRANSLATION_ADMIN = 'TRANSLATION_ADMIN',
   TRANSLATION_COORDINATOR = 'TRANSLATION_COORDINATOR',
   VOICEOVER_ADMIN = 'VOICEOVER_ADMIN',
+  NOTE_ADMIN = 'NOTE_ADMIN',
+  NOTE_EDITOR = 'NOTE_EDITOR',
 }
 
 export interface UserInfoBackendDict {
@@ -115,12 +117,20 @@ export class UserInfo {
     return this._roles.includes(UserRoles.BLOG_ADMIN);
   }
 
+  isNoteAdmin(): boolean {
+    return this._roles.includes(UserRoles.NOTE_ADMIN);
+  }
+
   isVoiceoverAdmin(): boolean {
     return this._roles.includes(UserRoles.VOICEOVER_ADMIN);
   }
 
   isBlogPostEditor(): boolean {
     return this._roles.includes(UserRoles.BLOG_POST_EDITOR);
+  }
+
+  isNoteEditor(): boolean {
+    return this._roles.includes(UserRoles.NOTE_EDITOR);
   }
 
   isCurriculumAdmin(): boolean {

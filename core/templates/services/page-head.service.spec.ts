@@ -56,4 +56,15 @@ describe('Page head service', () => {
       },
     ]);
   });
+
+  it('should updateTitle', () => {
+    let title = 'page_title';
+
+    spyOn(pageTitleService, 'setDocumentTitle');
+    spyOn(metaTagCustomizationService, 'addOrReplaceMetaTags');
+
+    pageHeadService.updateTitle(title);
+
+    expect(pageTitleService.setDocumentTitle).toHaveBeenCalledWith(title);
+  });
 });

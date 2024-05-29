@@ -1,0 +1,26 @@
+<oppia-angular-root *ngIf="pageIsShown">
+  <oppia-base-content>
+    <navbar-pre-logo-action>
+      <a href="/note" class="oppia-note-back-button e2e-test-back-button">
+        <span class="fas fa-arrow-left oppia-navbar-back-button"></span>
+      </a>
+    </navbar-pre-logo-action>
+    <navbar-breadcrumb class="note-page-breadcrumb">
+      <div class="nav navbar-nav oppia-navbar-breadcrumb">
+        <span class="mx-3 oppia-navbar-breadcrumb-separator"></span>
+        <div class="d-flex flex-column pt-2">
+          <p class="oppia-note-home-page-title">
+            {{ 'I18N_NOTE_HOME_PAGE_BREADCRUMB' | translate}}
+          </p>
+          <p class="oppia-note-title pt-1">{{ note.title }}</p>
+        </div>
+      </div>
+    </navbar-breadcrumb>
+    <content class="mb-5">
+      <oppia-note-page [notePageData]="notePageData">
+      </oppia-note-page>
+    </content>
+  </oppia-base-content>
+</oppia-angular-root>
+
+<oppia-error-page-root *ngIf="errorPageIsShown"></oppia-error-page-root>

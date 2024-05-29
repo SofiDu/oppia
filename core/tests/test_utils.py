@@ -2086,6 +2086,10 @@ class GenericTestBase(AppEngineTestBase):
     NEW_USER_EMAIL: Final = 'new.user@example.com'
     NEW_USER_USERNAME: Final = 'newuser'
     DEFAULT_END_STATE_NAME: Final = 'End'
+    NOTE_ADMIN_EMAIL: Final = 'noteadmin@example.com'
+    NOTE_ADMIN_USERNAME: Final = 'noteadm'
+    NOTE_EDITOR_EMAIL: Final = 'noteeditor@example.com'
+    NOTE_EDITOR_USERNAME: Final = 'noteeditor'
 
     PSEUDONYMOUS_ID: Final = 'pid_%s' % ('a' * 32)
 

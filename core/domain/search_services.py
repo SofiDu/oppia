@@ -24,6 +24,7 @@ from core import utils
 from core.domain import blog_domain
 from core.domain import collection_domain
 from core.domain import exp_domain
+from core.domain import note_domain
 from core.domain import rights_domain
 from core.domain import rights_manager
 from core.platform import models
@@ -56,6 +57,9 @@ SEARCH_INDEX_COLLECTIONS: Final = 'collections'
 # Please do this before merging the PR. Thanks!"
 # Name for the blog post search index.
 SEARCH_INDEX_BLOG_POSTS: Final = 'blog-posts'
+
+# Name for the note search index.
+SEARCH_INDEX_NOTES: Final = 'notes'
 
 # This is done to prevent the rank hitting 0 too easily. Note that
 # negative ranks are disallowed in the Search API.
@@ -451,3 +455,113 @@ def clear_blog_post_summaries_search_index() -> None:
     many entries in the index.
     """
     platform_search_services.clear_index(SEARCH_INDEX_BLOG_POSTS)
+
+
+class NoteSummaryDomainSearchDict(TypedDict):
+    """Dictionary representing the search dictionary of a note summary
+    domain object.
+    """
+
+    id: str
+    title: str
+    rank: int
+
+
+def index_note_summaries(
+        note_summaries: List[note_domain.NoteSummary]
+) -> None:
+    """Adds the note summaries to the search index.
+
+    Args:
+        note_summaries: list(NoteSummary). List of NoteSummary
+            domain objects to be indexed.
+    """
+
+    docs_to_index = [
+        _note_summary_to_search_dict(note_summary)
+        for note_summary in note_summaries
+    ]
+    platform_search_services.add_documents_to_index([
+        doc for doc in docs_to_index if doc
+    ], SEARCH_INDEX_NOTES)
+
+
+def _note_summary_to_search_dict(
+        note_summary: note_domain.NoteSummary
+) -> Optional[NoteSummaryDomainSearchDict]:
+    """Updates the dict to be returned, whether the given note summary is
+    to be indexed for further queries or not.
+
+    Args:
+        note_summary: NoteSummary. NoteSummary domain object.
+
+    Returns:
+        dict. The representation of the given blog post summary, in a form that
+        can be used by the search index.
+    """
+    if (
+            not note_summary.deleted and
+            note_summary.published_on is not None
+    ):
+        doc: NoteSummaryDomainSearchDict = {
+            'id': note_summary.id,
+            'title': note_summary.title,
+            'rank': math.floor(
+                utils.get_time_in_millisecs(note_summary.published_on))
+        }
+        return doc
+    return None
+
+
+def search_note_summaries(
+        query: str,
+        size: int,
+        offset: Optional[int] = None
+) -> Tuple[List[str], Optional[int]]:
+    """Searches through the available note summaries.
+
+    Args:
+        query: str. The query string to search for.
+        size: int. The maximum number of results to return.
+        offset: int or None. A marker that is used to get the next page of
+            results. If there are more documents that match the query than
+            'size', this function will return an offset to get the next page.
+
+    Returns:
+        tuple. A 2-tuple consisting of:
+            - list(str). A list of note ids that match the query.
+            - int or None. An offset if there are more matching note
+              summaries to fetch, None otherwise. If an offset is returned,
+              it will be a web-safe string that can be used in URLs.
+    """
+    result_ids, result_offset = (
+        platform_search_services.note_summaries_search(
+            query,
+            offset=offset,
+            size=size
+        )
+    )
+    return result_ids, result_offset
+
+
+def delete_note_summary_from_search_index(note_id: str) -> None:
+    """Deletes the documents corresponding to the note_id from the
+    search index.
+
+    Args:
+        note_id: str. Note id whose document are to be deleted from
+            the search index.
+    """
+    # The argument type of delete_documents_from_index() is List[str],
+    # therefore, we provide [note_id] as argument.
+    platform_search_services.delete_documents_from_index(
+        [note_id], SEARCH_INDEX_NOTES)
+
+
+def clear_note_summaries_search_index() -> None:
+    """Clears the note search index.
+
+    WARNING: This runs in-request, and may therefore fail if there are too
+    many entries in the index.
+    """
+    platform_search_services.clear_index(SEARCH_INDEX_NOTES)
